@@ -1,34 +1,34 @@
-TTD SmartFill – Chrome Extension
+🌟 TTD SmartFill – Chrome Extension
 
-A simple and fast autofill extension to quickly fill TTD (Tirumala Tirupati Devasthanam) booking forms with your saved pilgrim profiles.
+A fast and elegant autofill extension built to simplify your TTD (Tirumala Tirupati Devasthanam) booking experience.
 
-This extension helps you avoid typing the same details again and again during:
+Avoid typing the same pilgrim details again and again — SmartFill auto-fills everything in one click.
 
-🛕 TTD Darshan Booking
+🚀 Why SmartFill?
 
+Make TTD bookings smoother during:
+
+🛕 Darshan Booking
 🎫 Seva Electronic DIP
-
 🌐 Virtual Seva
+👫 Multiple Pilgrim Entry (2 at a time)
 
-👫 Supports up to 4 saved profiles
+All with saved profiles, ready to fill instantly.
 
-✔ Features
+⭐ Key Features
 
-Save up to 4 pilgrim profiles
+✔ Save up to 4 pilgrim profiles
+✔ One-click autofill
+✔ Keyboard Shortcut → Alt + Shift + F
+✔ Automatically fills:
 
-Single-click autofill
-
-Shortcut support (Alt + Shift + F)
-
-Auto-fills:
-
-Name
+Full Name
 
 Age
 
 Gender
 
-Phone
+Phone Number
 
 Email
 
@@ -40,55 +40,69 @@ Pincode
 
 Gothram
 
-ID Type
+ID Type (Aadhaar / PAN / Voter ID)
 
 ID Number
 
-Works on all major TTD pages
+✔ Works across all major TTD pages
+✔ Uses safe DOM scanning (no data sent outside)
 
-📌 How to Use
+🧩 How to Use
 
 Install the extension in Chrome (Developer Mode).
 
 Open the TTD website.
 
-Click the extension icon → add profiles.
+Click the SmartFill extension icon.
 
-Press Save Profiles.
+Enter up to 4 pilgrim profiles.
 
-Go to a TTD form and click Autofill (or press Alt + Shift + F).
+Click Save Profiles.
 
-Done! Your details will auto-fill instantly.
+Open a TTD booking form.
 
-📂 Folder Structure
+Press Autofill or use shortcut:
+👉 Alt + Shift + F
+
+Done — your details appear instantly.
+
+📁 Project Structure
 ttd-smartfill-extension/
-│── manifest.json
-│── popup.html
-│── popup.js
-│── content.js
-│── styles.css
-│── icons/
+│── manifest.json     # Chrome extension config
+│── popup.html        # UI for entering profiles
+│── popup.js          # Handles profile save & actions
+│── content.js        # Autofill logic for TTD pages
+│── styles.css        # UI styling
+│── icons/            # Extension icons
 
-🔧 Developer Mode Installation
+🛠 Install in Developer Mode
 
 Download or clone the repo.
 
-Go to chrome://extensions
+Open Chrome → navigate to:
+chrome://extensions
 
-Enable Developer Mode
+Enable Developer Mode (top-right).
 
-Click Load Unpacked
+Click Load Unpacked.
 
-Select the extension folder.
+Select the project folder.
 
-📝 Notes
+Extension will appear in your toolbar.
 
-Works only when you are on official TTD pages.
+🔒 Privacy Note
 
-Uses safe DOM scanning and dropdown handling.
+Your data:
 
-No data is sent outside — everything is local to your browser.
+Is stored only inside your browser
 
-🧑‍💻 Author
+Never leaves your device
+
+Is not uploaded anywhere
+
+Safe, private, and fully local.
+
+👤 Author
 
 Sri Harsha
+Creator of TTD SmartFill — built for convenience, speed, and daily use.
