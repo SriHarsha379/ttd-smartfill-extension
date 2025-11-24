@@ -1,5 +1,5 @@
 // ======================================================
-// TTD SmartFill - MULTI-PROFILE UL/LI ENGINE
+// TTD SmartFill - MULTI-PROFILE UL/LI ENGINE (FIXED)
 // Handles multiple tickets with different profiles
 // ======================================================
 
@@ -141,23 +141,58 @@ async function waitForULOptions(timeout = 1500) {
 }
 
 // -----------------------------
-// Pick option from UL LI list
+// Pick option from UL LI list (STRICT MATCHING)
 // -----------------------------
 async function pickULOption(value, options) {
   const target = value.trim().toLowerCase();
 
+  console.log(`🔍 Looking for: "${target}"`);
+  console.log(`📋 Available options:`, options.map(o => o.text));
+
+  // Try exact match first
   for (const op of options) {
     const txt = op.text.trim().toLowerCase();
-
-    if (txt === target || txt.includes(target) || target.includes(txt)) {
+    if (txt === target) {
+      console.log(`✅ EXACT match found: "${op.text}"`);
       op.node.scrollIntoView({ block: "center" });
+      await new Promise(r => setTimeout(r, 100));
       op.node.click();
       return true;
     }
   }
 
-  console.error("❌ Match not found:", value);
-  console.log("Available options:", options.map(o => o.text));
+  // Try partial match (but only if target is in the option text, not vice versa)
+  for (const op of options) {
+    const txt = op.text.trim().toLowerCase();
+
+    // For gender: strict matching
+    if (target === "male" && txt === "male") {
+      console.log(`✅ Matched: "${op.text}"`);
+      op.node.scrollIntoView({ block: "center" });
+      await new Promise(r => setTimeout(r, 100));
+      op.node.click();
+      return true;
+    }
+
+    if (target === "female" && txt === "female") {
+      console.log(`✅ Matched: "${op.text}"`);
+      op.node.scrollIntoView({ block: "center" });
+      await new Promise(r => setTimeout(r, 100));
+      op.node.click();
+      return true;
+    }
+
+    // For ID types: check if the option contains the target
+    if (txt.includes(target)) {
+      console.log(`✅ Partial match found: "${op.text}"`);
+      op.node.scrollIntoView({ block: "center" });
+      await new Promise(r => setTimeout(r, 100));
+      op.node.click();
+      return true;
+    }
+  }
+
+  console.error(`❌ No match found for: "${value}"`);
   return false;
 }
 
@@ -175,22 +210,25 @@ function openDropdownByElement(input) {
 // -----------------------------
 async function handleDropdownForInput(input, value) {
   for (let attempt = 1; attempt <= 3; attempt++) {
-    console.log(`🔽 Attempt ${attempt} for dropdown`);
+    console.log(`🔽 Attempt ${attempt} for dropdown: ${value}`);
 
     openDropdownByElement(input);
-    await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, 300));
 
     const ops = await waitForULOptions(1500);
     if (ops.length === 0) {
-      console.warn(`⚠ No options displayed`);
+      console.warn(`⚠ No options displayed on attempt ${attempt}`);
       continue;
     }
 
     const ok = await pickULOption(value, ops);
-    if (ok) return true;
+    if (ok) {
+      console.log(`✅ Successfully selected: ${value}`);
+      return true;
+    }
   }
 
-  console.error(`❌ FAILED to select dropdown value: ${value}`);
+  console.error(`❌ FAILED to select dropdown value after 3 attempts: ${value}`);
   return false;
 }
 
@@ -200,20 +238,20 @@ async function handleDropdownForInput(input, value) {
 async function fillSection(inputs, profile, sectionIndex) {
   console.log(`\n🎫 Filling Section ${sectionIndex + 1} with:`, profile.fullName);
 
-  // First pass: Fill all text inputs (including ID Number)
+  // First pass: Fill all text inputs (excluding ID Number for now)
   for (const input of inputs) {
     const label = getSmartLabel(input);
     const field = guessFieldType(input, label);
 
     if (!field) continue;
-    if (field === "gender" || field === "idType") continue; // Handle dropdowns separately
+    if (field === "gender" || field === "idType" || field === "idNumber") continue;
 
     applyValue(input, profile[field]);
   }
 
-  await new Promise(r => setTimeout(r, 200));
+  await new Promise(r => setTimeout(r, 300));
 
-  // Second pass: Handle dropdowns
+  // Second pass: Handle Gender dropdown
   for (const input of inputs) {
     const label = getSmartLabel(input);
     const field = guessFieldType(input, label);
@@ -221,19 +259,24 @@ async function fillSection(inputs, profile, sectionIndex) {
     if (field === "gender" && profile.gender) {
       console.log(`🔽 Setting Gender: ${profile.gender}`);
       await handleDropdownForInput(input, profile.gender);
-      await new Promise(r => setTimeout(r, 200));
-    }
-
-    if (field === "idType" && profile.idType) {
-      console.log(`🔽 Setting ID Type: ${profile.idType}`);
-      await handleDropdownForInput(input, profile.idType);
       await new Promise(r => setTimeout(r, 300));
     }
   }
 
-  // Third pass: Fill ID Number after ID Type is selected
-  // (Some forms only enable ID Number field after ID Type is chosen)
-  await new Promise(r => setTimeout(r, 200));
+  // Third pass: Handle ID Type dropdown
+  for (const input of inputs) {
+    const label = getSmartLabel(input);
+    const field = guessFieldType(input, label);
+
+    if (field === "idType" && profile.idType) {
+      console.log(`🔽 Setting ID Type: ${profile.idType}`);
+      await handleDropdownForInput(input, profile.idType);
+      await new Promise(r => setTimeout(r, 400));
+    }
+  }
+
+  // Fourth pass: Fill ID Number after ID Type is selected
+  await new Promise(r => setTimeout(r, 300));
 
   for (const input of inputs) {
     const label = getSmartLabel(input);
@@ -252,7 +295,7 @@ async function fillSection(inputs, profile, sectionIndex) {
 // Fill General Details (top section)
 // -----------------------------
 function fillGeneralDetails(profile) {
-  console.log("📝 Filling General Details with:", profile.fullName);
+  console.log("📝 Filling General Details with:", profile.fullName || profile.email);
 
   const allInputs = document.querySelectorAll("input");
 
@@ -285,7 +328,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     // Step 1: Fill General Details with Person 1
     if (msg.profiles[0]) {
       fillGeneralDetails(msg.profiles[0]);
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 400));
     }
 
     // Step 2: Fill Gruhastha Details sections
@@ -301,9 +344,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
       await fillSection(sections[i], profile, i);
 
-      // Small delay between sections
+      // Delay between sections
       if (i < sections.length - 1) {
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 400));
       }
     }
 

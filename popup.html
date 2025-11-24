@@ -8,20 +8,100 @@
 <body>
   <div class="app">
     <div class="header">
-      <div class="header-title">TTD SmartFill</div>
-      <div class="header-sub">Save 4 profiles & autofill TTD in 1 click</div>
+      <div class="header-title">TTD SmartFill Pro</div>
+      <div class="header-sub">Manage multiple families for ticket booking</div>
     </div>
 
-    <div id="profiles-container"></div>
+    <!-- Family Selector -->
+    <div class="family-selector">
+      <div class="family-dropdown">
+        <label>Select Family:</label>
+        <select id="familySelect">
+          <option value="1">Family 1</option>
+        </select>
+      </div>
+      <div class="family-actions">
+        <button id="addFamily" class="btn-icon" title="Add New Family">+ Family</button>
+        <button id="deleteFamily" class="btn-icon delete" title="Delete Current Family">🗑️</button>
+        <button id="renameFamily" class="btn-icon" title="Rename Family">✏️</button>
+      </div>
+    </div>
 
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="general">General Details</button>
+      <button class="tab-btn" data-tab="profiles">Profile Details</button>
+    </div>
+
+    <!-- General Details Tab -->
+    <div id="general-tab" class="tab-content active">
+      <div class="general-card">
+        <div class="field-group">
+          <label>Email</label>
+          <input data-field="email" placeholder="your@email.com" />
+        </div>
+
+        <div class="field-group">
+          <label>Phone</label>
+          <input data-field="phone" placeholder="10-digit mobile" />
+        </div>
+
+        <div class="field-group">
+          <label>Address</label>
+          <input data-field="address" placeholder="Street address" />
+        </div>
+
+        <div class="row-2">
+          <div class="field-group">
+            <label>City</label>
+            <input data-field="city" placeholder="Bangalore" />
+          </div>
+
+          <div class="field-group">
+            <label>State</label>
+            <input data-field="state" placeholder="Karnataka" />
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="field-group">
+            <label>Country</label>
+            <input data-field="country" placeholder="India" />
+          </div>
+
+          <div class="field-group">
+            <label>Pincode</label>
+            <input data-field="pincode" placeholder="560001" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Gothram</label>
+          <input data-field="gothram" placeholder="Bharadwaja / Vishwamitra" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Details Tab -->
+    <div id="profiles-tab" class="tab-content">
+      <div class="help-note">
+        💡 <strong>ID Type:</strong> Enter exactly as shown on website (e.g., "Aadhaar Card", "PAN Card", "Passport", "Voter ID")
+      </div>
+
+      <div id="profiles-container"></div>
+
+      <button id="addProfile" class="btn-add">+ Add Profile (Max 6)</button>
+    </div>
+
+    <!-- Action Buttons -->
     <div class="btn-row">
-      <button id="saveProfiles" class="btn-primary">💾 Save Profiles</button>
+      <button id="saveProfiles" class="btn-primary">💾 Save Current Family</button>
       <button id="autofillTTD" class="btn-ghost">⚡ Autofill</button>
     </div>
 
     <div class="footer">
       <span>Hotkey: Alt+Shift+F</span>
-      <span>Phase-1</span>
+      <span id="profile-count">0 profiles</span>
     </div>
 
     <div id="status" class="status"></div>
